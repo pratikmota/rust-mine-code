@@ -11,15 +11,20 @@ fn main() {
     let path =
         "/home/code/PROGRAMMING/RUST-LANG/rust-mine-code/mine-problem/src/input/small_input.txt"
             .to_string();
+
+    // let path =
+    //     "/home/code/PROGRAMMING/RUST-LANG/rust-mine-code/mine-problem/src/input/large_input.txt"
+    //         .to_string();
+
     //let dir = env::current_dir().unwrap();
     //println!("starting dir: {}", dir);
     let file_num = load_from_file(&path);
     //println!("{:?}", file_num);
-    let safe_num = 5;
+    let safe_num: usize = 5;
     let final_result = mine_result(&safe_num, &file_num);
     println!("{}", final_result);
 }
-fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
+fn mine_result(safe_number: &usize, input_num: &Vec<i128>) -> String {
     // if  nums.len() < safe_number {
     //     "Mine is Safe".to_string()
     //     return
@@ -29,11 +34,12 @@ fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
     //     println!("Element at position {}: {:?}", pos, e);
     // }
 
+    let condition = safe_number;
     for (pos, e) in input_num.iter().enumerate() {
-        if pos > 4 {
+        if pos > (condition - 1) {
             let mut is_ok = false;
-            let start = 0;
-            let end = 4;
+            let start = pos - condition;
+            let end = pos - 1;
             for index1 in start..end {
                 for index2 in start..end {
                     if index1 != index2 {
@@ -47,8 +53,11 @@ fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
                     break;
                 }
             }
-            if !is_ok {
-                println!("Element at position {}: {:?}", pos, e);
+            if is_ok {
+                println!("OK -Element at position {}: {:?}", pos, e);
+            } else {
+                println!("NOK - Element at position {}: {:?}", pos, e);
+                break;
             }
         }
     }
@@ -70,13 +79,13 @@ fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
 }
 
 //load_from_file is used to load file
-fn load_from_file(file_path: &str) -> Vec<i64> {
+fn load_from_file(file_path: &str) -> Vec<i128> {
     let file = File::open(file_path).expect("file wasn't found.");
     let reader = BufReader::new(file);
 
-    let input_numbers: Vec<i64> = reader
+    let input_numbers: Vec<i128> = reader
         .lines()
-        .map(|line| line.unwrap().parse::<i64>().unwrap())
+        .map(|line| line.unwrap().parse::<i128>().unwrap())
         .collect();
     input_numbers
 }
