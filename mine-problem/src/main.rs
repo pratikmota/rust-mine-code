@@ -29,9 +29,32 @@ fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
     //     println!("Element at position {}: {:?}", pos, e);
     // }
 
-    for i in input_num.iter().skip(5) {
-        println! {"{:?}", i}
+    for (pos, e) in input_num.iter().enumerate() {
+        if pos > 4 {
+            let mut is_ok = false;
+            for index1 in 0..4 {
+                for index2 in 0..4 {
+                    if index1 != index2 {
+                        if (input_num[index1] + input_num[index2]) == input_num[pos] {
+                            is_ok = true;
+                            break;
+                        }
+                    }
+                }
+                if is_ok {
+                    break;
+                }
+            }
+            if !is_ok {
+                println!("Element at position {}: {:?}", pos, e);
+            }
+        }
     }
+    //println!("Element at position {}: {:?}", pos, e);
+
+    // for i in input_num.iter().skip(5) {
+    //     println! {"{:?}", i}
+    // }
 
     // for i in input_num[5..].iter() {
     //     println! {"{:?}", i}
