@@ -32,8 +32,10 @@ fn mine_result(safe_number: &i32, input_num: &Vec<i64>) -> String {
     for (pos, e) in input_num.iter().enumerate() {
         if pos > 4 {
             let mut is_ok = false;
-            for index1 in 0..4 {
-                for index2 in 0..4 {
+            let start = 0;
+            let end = 4;
+            for index1 in start..end {
+                for index2 in start..end {
                     if index1 != index2 {
                         if (input_num[index1] + input_num[index2]) == input_num[pos] {
                             is_ok = true;
