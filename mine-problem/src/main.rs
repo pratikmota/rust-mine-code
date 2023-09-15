@@ -2,87 +2,75 @@ use std::env;
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
-use std::path::Path;
+
 fn main() {
-    println!("Hello, world!");
-    let x: i128 = 3326780573292121781722961636304313490;
-    println!("{}", x);
+    // Initialize input file path and safe number
+    let cwd = env::current_dir().unwrap();
+    let mut path: String = String::from(cwd.to_string_lossy());
+    // For Small data
+    //path.push_str("/src/input/small_input.txt");
+    //let safe_num: usize = 5;
 
-    let path =
-        "/home/code/PROGRAMMING/RUST-LANG/rust-mine-code/mine-problem/src/input/small_input.txt"
-            .to_string();
+    // For large data
+    path.push_str("/src/input/large_input.txt");
+    let safe_num: usize = 100;
 
-    // let path =
-    //     "/home/code/PROGRAMMING/RUST-LANG/rust-mine-code/mine-problem/src/input/large_input.txt"
-    //         .to_string();
-
-    //let dir = env::current_dir().unwrap();
-    //println!("starting dir: {}", dir);
+    // load from file and calculate mine OK or NOK
     let file_num = load_from_file(&path);
-    //println!("{:?}", file_num);
-    let safe_num: usize = 5;
-    let final_result = mine_result(&safe_num, &file_num);
-    println!("{}", final_result);
+    calculate_mine_result(&safe_num, &file_num);
 }
-fn mine_result(safe_number: &usize, input_num: &Vec<i128>) -> String {
-    // if  nums.len() < safe_number {
-    //     "Mine is Safe".to_string()
-    //     return
-    // }
-    // let v = vec![1; 10];
-    // for (pos, e) in v.iter().enumerate() {
-    //     println!("Element at position {}: {:?}", pos, e);
-    // }
 
+// calculate_mine_result will calculate and display OK / NOK results of mine
+fn calculate_mine_result(safe_number: &usize, input_num: &Vec<i128>) {
+    if safe_number > &input_num.len() {
+        println!("MINE IS SAFE - ADD MORE ELEMENTS TO CHECK");
+        return;
+    }
     let condition = safe_number;
     for (pos, e) in input_num.iter().enumerate() {
         if pos > (condition - 1) {
             let mut is_ok = false;
+            // getting last xx value for start and end
             let start = pos - condition;
             let end = pos - 1;
+            // O(n2) loop to find mine is ok or not
             for index1 in start..end {
                 for index2 in start..end {
+                    // skip same element
                     if index1 != index2 {
+                        // check Addition is value or not
                         if (input_num[index1] + input_num[index2]) == input_num[pos] {
                             is_ok = true;
                             break;
                         }
                     }
                 }
+                // break from 2nd loop if result ok
                 if is_ok {
                     break;
                 }
             }
+            // break from 1st loop if result found
             if is_ok {
-                println!("OK -Element at position {}: {:?}", pos, e);
+                println!("OK - Element {:?} at position {}.", e, pos + 1);
             } else {
-                println!("NOK - Element at position {}: {:?}", pos, e);
+                println!(
+                    "NOK - MINE CRUMBLE - Element {:?} at position {}.",
+                    e,
+                    pos + 1
+                );
                 break;
             }
         }
     }
-    //println!("Element at position {}: {:?}", pos, e);
-
-    // for i in input_num.iter().skip(5) {
-    //     println! {"{:?}", i}
-    // }
-
-    // for i in input_num[5..].iter() {
-    //     println! {"{:?}", i}
-    // }
-
-    // for i in nums {
-    //     println! {"{:?}", i}
-    // }
-
-    "hello".to_string()
 }
 
 //load_from_file is used to load file
 fn load_from_file(file_path: &str) -> Vec<i128> {
+    // open input file
     let file = File::open(file_path).expect("file wasn't found.");
     let reader = BufReader::new(file);
-
+    // add input file data in vector
     let input_numbers: Vec<i128> = reader
         .lines()
         .map(|line| line.unwrap().parse::<i128>().unwrap())
